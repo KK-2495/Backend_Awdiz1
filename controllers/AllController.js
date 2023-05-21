@@ -7,7 +7,7 @@ export const Abhi = (req,res) => {
 }
 
 export const Swaraj = (req,res) => {
-    res.send('Sending message from swaraj function');
+    res.status(201).send('Sending message from swaraj function');
 }
 
 export const Vrushab = (req,res) => {
