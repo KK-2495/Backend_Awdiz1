@@ -7,7 +7,12 @@ export const Abhi = (req,res) => {
 }
 
 export const Swaraj = (req,res) => {
+    try{
     res.status(201).send('Sending message from swaraj function');
+    // throw new Error("I want to throw an error.");
+    }catch(error){
+        console.log(error," - error")
+    }
 }
 
 export const Vrushab = (req,res) => {
