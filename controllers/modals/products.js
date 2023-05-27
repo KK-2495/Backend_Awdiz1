@@ -9,4 +9,4 @@ const product = new Schema({
     image: [String]
 });
 
-export default product;
+export default mongoose.model("products", product);

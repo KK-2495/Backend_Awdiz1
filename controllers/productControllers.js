@@ -1,16 +1,22 @@
-export const addProduct = (req,res) => {
+import products from "./modals/products.js";
+
+export const addProduct = async (req,res) => {
    try {
     console.log(req.body);
+    const {Name, Price, Image} = req.body;
     if(!Name) return res.send('Name is required.');
-    // if(!Price) return res.send('Price is required.');
+    if(!Price) return res.send('Price is required.');
     // step - store product data in database;
     // required - const product = schema, mongodb connection, mongodb functions;
-    // const {Name, Price, Image} = req.body;
     // console.log(Name);
-    //-- we will add prouct to database then will display product to user or a succes message//
+    const product = new products({
+      name: Name,
+      price: Price,
+      image: Image
+    })
+    await product.save()
     // return res.send({message: product added});
-
-    return res.send("produt added");
+    return res.send(product);
    } catch (error) {
     console.log(error);
    }
