@@ -48,20 +48,19 @@ export const register = async (req,res) => {
 }
 
 // ***update user****
-export const changeUserName = async (req,res) => {
+export const changeUserData = async (req,res) => {
     try {
-        const {userEmail} = req.body;
-        if(userEmail){
+        const {userEmail,updateName} = req.body;
+        if(!userEmail) return res.send('userEmail is required');
             const response = await users.find({email:userEmail}).exec();
-        if(response){
-            // let changeName = response[0].name;
-            response[0].name = userName;
-            await users.updateOne({name:userName});
-            return res.send("Data updated successfully");
-        }
-        res.send(response);
+        if(response[0].email == userEmail) {
+             // let changeName = response[0].name;
+             response[0].name = updateName;
+             await users.findOneAndUpdate({name:updateName});
+             return res.send("Data updated successfully");
+
         }else{
-            return res.send("enter a registered emaiil to update");
+            return res.send("You are not registered with this email");
         }
     } catch (error) {
         return res.send(error);
