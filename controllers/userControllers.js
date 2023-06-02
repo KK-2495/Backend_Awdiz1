@@ -50,14 +50,14 @@ export const register = async (req,res) => {
 // ***update user****
 export const changeUserData = async (req,res) => {
     try {
-        const {userEmail,updateName} = req.body;
-        if(!userEmail) return res.send('userEmail is required');
+        const {userEmail,userName} = req.body;
+        if(!userEmail) return res.send('userEmail not found');
             const response = await users.find({email:userEmail}).exec();
         if(response[0].email == userEmail) {
              // let changeName = response[0].name;
-             response[0].name = updateName;
-             await users.findOneAndUpdate({name:updateName});
-             return res.send("Data updated successfully");
+            //  response[0].name = updateName;
+             await users.findOneAndUpdate({email:userEmail},{name:userName}).exec();
+             return res.send(response);
 
         }else{
             return res.send("You are not registered with this email");
