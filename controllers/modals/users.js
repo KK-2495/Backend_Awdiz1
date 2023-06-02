@@ -7,7 +7,11 @@ const user = new Schema({
     email: String,
     password: String,
     number: Number,
-    otp: String
+    emailOtp: String,
+    numberOtp: String,
+    isNumberVerified: Boolean,
+    isEmailVerified: Boolean,
+
 });
 
 export default mongoose.model("users", user);

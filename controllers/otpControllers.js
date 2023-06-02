@@ -2,43 +2,81 @@
 import { v4 as uuidv4 } from 'uuid';
 import users from './modals/users.js';
 
-export const otpRegistration = async (req,res) => {
+export const otpNumberRegister = async (req,res) => {
     try {
-        const {email, number} = req.body;
-        if(!email) return res.send("Email is required");
+        const {number} = req.body;
         if(!number) return res.send("Number is required");
 
         const code = uuidv4();
         // res.send(code);
-        const response = await users.find({email, number}).exec();
-        if(response.length) res.send("User is already registered");
+        const response = await users.find({number}).exec();
+        if(response.length) return res.send("User is already registered");
         
-        const user = new users ({
-            email,
+        const user = new users({
             number,
-            otp: code
+            numberOtp: code,
+            isNumberVerified: false
         });
         await user.save();
-        res.send("Check your phone and Email for OTP.");
+        return res.send("Check your phone for OTP.");
 
     } catch (error) {
        return res.send(error);
     }
 }
 
-export const otpCheckLogin = async (req,res) => {
+export const otpNumberVerification = async (req,res) => {
     try {
-        const{email, number, otp} = req.body;
-        if(!email) return res.send("Email is required");
+        const{number, otp} = req.body;
         if(!number) return res.send("Number is required");
+        if(!otp) return res.send("OTP is required");
+
+        const user = await users.find({number}).exec();
+
+        if(!user.length) return res.send("User not found");
+
+        if(user[0].numberOtp == otp){
+            await users.findOneAndUpdate({number},{isNumberVerified: true});
+            return res.send("Your Mobile Number is verified through OTP.");
+        }
+        return res.send("incorrect OTP");
+        
+    } catch (error) {
+        return res.send(error);
+    }
+}
+
+export const otpEmailRegister = async (req,res) => {
+    try {
+        const {number, email} = req.body;
+        if(!number) return res.send("Number is required");
+        if(!email) return res.send("Email is required");
+
+        const code = uuidv4();
+        // res.send(code);
+        await users.findOneAndUpdate({number},{email,emailOtp:code,isEmailVerified:false}).exec();
+       
+        return res.send("Email updated Successfully.");
+
+    } catch (error) {
+       return res.send(error);
+    }
+}
+
+
+export const otpEmailVerification = async (req,res) => {
+    try {
+        const{email, otp} = req.body;
+        if(!email) return res.send("Email is required");
         if(!otp) return res.send("OTP is required");
 
         const user = await users.find({email}).exec();
 
         if(!user.length) return res.send("User not found");
 
-        if(user[0].otp == otp){
-            return res.send("Login Success.");
+        if(user[0].emailOtp == otp){
+            await users.findOneAndUpdate({email},{isEmailVerified: true});
+            return res.send("Your Email is verified through OTP.");
         }
         return res.send("incorrect OTP");
         
