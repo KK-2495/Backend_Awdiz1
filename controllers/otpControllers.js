@@ -84,3 +84,72 @@ export const otpEmailVerification = async (req,res) => {
         return res.send(error);
     }
 }
+
+
+export const otpNumberLogin = async (req,res) => {
+    try {
+        const {number} = req.body;
+        if(!number) return res.send("Number is required.");
+
+        const user = await users.find({number}).exec();
+        const userId = user[0]?._id;
+        const code = uuidv4();
+            await users.findOneAndUpdate({_id:userId},{numberLoginOtp: code});
+            return res.send("Check your Phone for OTP");
+    } catch (error) {
+        return res.send(error);
+    }
+} 
+
+export const otpEmailLogin = async (req,res) => {
+    try {
+        const {email} = req.body;
+        if(!email) return res.send("Email is required.");
+
+        const user = await users.find({email}).exec();
+        const userId = user[0]?._id;
+        const code = uuidv4();
+            await users.findOneAndUpdate({_id:userId},{emailLoginOtp: code});
+            return res.send("Check your Email for OTP.");
+    } catch (error) {
+        return res.send(error);
+    }
+} 
+
+export const checkNumOtp = async (req,res) => {
+    try {
+        const {number,otp} = req.body;
+        if(!number) return res.send("Number is required.");
+        if(!otp) return res.send("OTP is required.");
+
+        const user = await users.find({number}).exec();
+        // console.log(user);
+        if(!user) return res.send("User not found");
+
+        if(user[0].numberLoginOtp == otp){
+            return res.send("Your Number is verified through OTP.");
+        }
+        return res.send("incorrect OTP");
+    } catch (error) {
+        return res.send(error);
+    }
+} 
+
+export const checkEmailOtp = async (req,res) => {
+    try {
+        const {email,otp} = req.body;
+        if(!email) return res.send("Email is required.");
+        if(!otp) return res.send("OTP is required.");
+
+        const user = await users.find({email}).exec();
+        // console.log(user);
+        if(!user) return res.send("User not found");
+
+        if(user[0].emailLoginOtp == otp){
+            return res.send("Your Email is verified through OTP.");
+        }
+        return res.send("incorrect OTP");
+    } catch (error) {
+        return res.send(error);
+    }
+} 

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import { Schema } from "mongoose";
+import { stringify } from "uuid";
 
 const user = new Schema({
     name: String,
@@ -9,6 +10,8 @@ const user = new Schema({
     number: Number,
     emailOtp: String,
     numberOtp: String,
+    numberLoginOtp: String,
+    emailLoginOtp: String,
     isNumberVerified: Boolean,
     isEmailVerified: Boolean,
 
